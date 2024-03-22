@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    Fname: {
+    fname: {
         type: String,
         required: true
     },
-    Sname: {
+    sname: {
         type: String,
         required: true
     },
@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        match: /^\S+@\S+\.\S+$/
     },
     password: {
         type: String,
