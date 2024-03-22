@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors"
 import dotenv from "dotenv"
+import connectDB from "./db/dbconfig.js";
+
 
 dotenv.config()
 
@@ -12,7 +14,18 @@ app.use(express.json())
 
 
 
-app.listen(port,()=>{
-    console.log(`Server running on port: ${port} ...`)
-})
+function start() {
+    try {
+      connectDB(process.env.DBURL);
+      console.log("Connected to database ...");
+      app.listen(port, () => {
+        console.log(`Server running on port: ${port} ...`);
+      });
+    } catch (error) {
+      console.error("Error connecting to database:", error);
+    }
+  }
+  
+  start();
+  
 
