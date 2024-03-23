@@ -7,6 +7,14 @@ function getAllBlogs(req,res){
     )
 }
 
+
+function getUserBlog(req,res){
+    TryCatchWrapper(
+        blogServices.getUserBlog(req,res)
+    )
+
+}
+
 function addBlog(req,res,){
     TryCatchWrapper(
         blogServices.newBlog(req,res)
@@ -14,8 +22,22 @@ function addBlog(req,res,){
 }
 
 
+function getSingleBlog(req,res){
+    TryCatchWrapper(
+        blogServices.getSingleBlog(req,res)
+    )
+}
+
+
+function deleteBlog(req,res){
+    TryCatchWrapper(
+        blogServices.deleteBlog(req,res)
+    
+    )
+}
+
 const blogControllers ={
-    getAllBlogs,addBlog
+    getAllBlogs,addBlog,getUserBlog,deleteBlog,getSingleBlog
 }
 
 export default blogControllers
