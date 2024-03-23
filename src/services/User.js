@@ -66,12 +66,13 @@ async function addFollower(req, res, next) {
 
         if (User.following.includes(id)) {
             User.following = User.following.filter(item => item !== id);
+            res.status(201).json({ message: "Successfully unfollowed"+ " "+ FollowUser.name });
         } else {
             User.following.push(id);
         }
 
         if (FollowUser.followers.includes(userID)) {
-            FollowUser.followers = FollowUser.followers.filter(item => item !== userID);
+            res.status(201)
         } else {
             FollowUser.followers.push(userID);
         }

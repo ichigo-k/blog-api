@@ -22,9 +22,18 @@ const blogSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    foreignKey:{
+    email:{
         type: String,
         required: true
+    },
+    category: {
+        type: String,
+        enum: ['education', 'lifestyle', 'religion','entertainment','sports','gaming','music','movies','africa','europe','asia','america','food','anime','others'], 
+        required: true
+    },
+    tags:{
+        type:Array,
+        default:[]
     }
 });
 
