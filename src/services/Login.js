@@ -14,6 +14,7 @@ export default function authUser(req,res,next){
                                 message:"Login successful",
                                 user:{
                                     user:{
+                                        id:data._id,
                                         name:data.name,
                                         username:data.username,
                                         email:data.email,

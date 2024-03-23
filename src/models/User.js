@@ -22,8 +22,12 @@ const userSchema = new mongoose.Schema({
     },
     followers:{
         type: Array,
+    default: []
     },
-    following:[{type : mongoose.Schema.Types.ObjectId, ref: 'user'}],
+    following:{
+        type: Array,
+    default: []
+    },
 });
    
 

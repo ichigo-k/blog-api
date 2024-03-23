@@ -17,6 +17,7 @@ async function addUser(req, res,next) {
         res.status(201).json({
             message:"Successfuly added" +" "+ name,
             user:{
+                id:user._id,
                 name,
                 username,
                 email,

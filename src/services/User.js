@@ -18,11 +18,75 @@ function getUserDetails(req,res,next){
 }
 
 
-function updateUserDetails()
+function updateUserDetails(req,res,next){
+    const id = req.params.id
+    const {name,email,username} = req.body
+    user.findByIdAndUpdate(id,{name,email,username})
+    .then(() => {
+        res.status(200).json({
+            message:"User updated successfully"
+        })
+    })
+    .catch((error)=>{
+        res.status(500).json({
+            message:error.message
+        })
+    })
 
+}
+
+
+function deleteUser(req,res,next){
+    const id = req.params.id
+    user.findByIdAndDelete(id)
+    .then(()=>{
+        res.status(200).json({
+            message:"User deleted successfully"
+        })
+    })
+    .catch((error)=>{
+        res.status(500).json({
+            message:error.message
+        })
+    })
+
+}
+
+async function addFollower(req, res, next) {
+    try {
+        const { id } = req.params;
+        const { userID } = req.body;
+
+        const FollowUser = await user.findById(id);
+        const User = await user.findById(userID);
+
+        if (!FollowUser || !User) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (User.following.includes(id)) {
+            User.following = User.following.filter(item => item !== id);
+        } else {
+            User.following.push(id);
+        }
+
+        if (FollowUser.followers.includes(userID)) {
+            FollowUser.followers = FollowUser.followers.filter(item => item !== userID);
+        } else {
+            FollowUser.followers.push(userID);
+        }
+
+        await user.findByIdAndUpdate(userID, { $set: { following: User.following } }, { new: true });
+        await FollowUser.save();
+
+        res.status(201).json({ message: "Successfully followed"+ " "+ FollowUser.name });
+    } catch (error) {
+        next(error);
+    }
+}
 
 const userServices ={
-    getUserDetails
+    getUserDetails,updateUserDetails,deleteUser,addFollower
 }
 
 export default userServices

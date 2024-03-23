@@ -7,19 +7,27 @@ function getUser(req,res,next){
     )
 }
 
-function updateUser(){
+function updateUser(req,res,next){
     TryCatchWrapper(
-        
+        userServices.updateUserDetails(req,res,next)
     )
 }
 
-function deleteUser(){
-    console.log("works")
+function deleteUser(req,res,next){
+    TryCatchWrapper(
+        userServices.deleteUser(req,res,next)
+    )
+}
+
+function follow(req,res,next){
+    TryCatchWrapper(
+        userServices.addFollower(req,res,next)
+    )
 }
 
 
 const userControllers = {
-    getUser,updateUser,deleteUser
+    getUser,updateUser,deleteUser,follow
 }
 
 export default userControllers
