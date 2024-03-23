@@ -1,32 +1,37 @@
 import bcrypt from "bcrypt"
 import user from "../models/User.js"
-async function addUser(req, res) {
-     const { fname, sname, email, password } = req.body
+async function addUser(req, res,next) {
+     const { name, username, email, password } = req.body
 
      const hashedPassword = await bcrypt.hash(password,10)
 
      await user.create({
-        fname,
-        sname,
+        name,
+        username,
         email,
-        password:hashedPassword
-     })
+        password: hashedPassword,
+        followers: [], 
+        following: [] 
+    })
      .then(()=>{
-        res.json({
-            message:"Successfuly added" + " " + fname + " " + sname,
+        res.status(201).json({
+            message:"Successfuly added" +" "+ name,
             user:{
-                fname,
-                sname,
-                email
+                name,
+                username,
+                email,
+                followers:[],
+                following:[],
             }
         })
      })
      .catch((err)=>{
-        res.json({
+        res.status(500).json({
             message:err.message
         })
      })
    
+     next()
 }
 
 

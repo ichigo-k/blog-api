@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    fname: {
+    name: {
         type: String,
         required: true
     },
-    sname: {
+    username: {
         type: String,
         required: true
     },
@@ -19,8 +19,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         min: [6, 'Must be at least 6 characters'],
-    }
-})
+    },
+    followers:{
+        type: Array,
+    },
+    following:[{type : mongoose.Schema.Types.ObjectId, ref: 'user'}],
+});
+   
 
 const user = mongoose.model("user", userSchema);
 export default user;
