@@ -12,9 +12,26 @@ async function getAll(req,res){
 }
 
 
+async function newBlog(req,res){
+    const{title , content, tags, category, email} = req.body
+
+    await blog.create({
+        title, content, tags, category, email
+    })
+    .then(()=>{
+        res.status(201).json({
+            message:"Blog created successfully"
+        })
+    })
+    .catch((err)=>{
+        res.status(500).json(err)
+    })
+}
+
+
 
 const blogServices ={
-    getAll
+    getAll,newBlog
 }
 
 

@@ -7,9 +7,15 @@ function getAllBlogs(req,res){
     )
 }
 
+function addBlog(req,res,){
+    TryCatchWrapper(
+        blogServices.newBlog(req,res)
+    )
+}
+
 
 const blogControllers ={
-    getAllBlogs
+    getAllBlogs,addBlog
 }
 
 export default blogControllers
