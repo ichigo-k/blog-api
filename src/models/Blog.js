@@ -15,8 +15,8 @@ const blogSchema = new mongoose.Schema({
         default: Date.now
     },
     likes:{
-        type: Number,
-        default: 0
+       type:Array,
+       default:[]
     },
     email:{
         type: String,
@@ -30,6 +30,10 @@ const blogSchema = new mongoose.Schema({
     },
     tags:{
         type:Array,
+        default:[]
+    },
+    views:{
+        type: Array,
         default:[]
     }
 });

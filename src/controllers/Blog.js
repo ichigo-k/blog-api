@@ -36,8 +36,33 @@ function deleteBlog(req,res){
     )
 }
 
-const blogControllers ={
-    getAllBlogs,addBlog,getUserBlog,deleteBlog,getSingleBlog
+function likeBlog(req,res){
+    TryCatchWrapper(
+        blogServices.likeBlog(req,res)
+    )
 }
+
+
+function blogCategory(req,res){
+    const cats = [
+        'education', 'lifestyle', 'religion','entertainment','sports','gaming','music','movies','africa','europe','asia','america','food','anime','others'
+    ]
+
+    res.json(cats)
+}
+
+function getByCat(req,res){
+    TryCatchWrapper(
+        blogServices.getByCat(req,res)
+    )
+
+}
+
+const blogControllers ={
+    getAllBlogs,addBlog,getUserBlog,deleteBlog,getSingleBlog,likeBlog,blogCategory,getByCat
+}
+
+
+
 
 export default blogControllers

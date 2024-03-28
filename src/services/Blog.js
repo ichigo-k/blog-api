@@ -2,15 +2,15 @@ import blog from "../models/Blog.js"
 import user from "../models/User.js"
 
 
-async function getAll(req,res){
-    const blogs = await blog.find()
-    .then(()=>{
-        res.json(blogs)
-    })
-    .catch((err)=>{
-        res.json(err)
-    })
+async function getAll(req, res) {
+    try {
+        const blogs = await blog.find();
+        return res.json(blogs);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
 }
+
 
 
 async function getUserBlog(req, res) {
@@ -80,8 +80,53 @@ async function getSingleBlog(req, res) {
 }
 
 
+async function likeBlog(req, res) {
+    const { blogId } = req.params;
+    const {id} = req.body
+
+    try {
+        const Blog = await blog.findById(blogId);
+
+        if (!Blog) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+
+        // Check if the user has already liked the blog
+        const hasLiked = Blog.likes.includes(id);
+
+        if (hasLiked) {
+            // Remove the like
+            await blog.findByIdAndUpdate(blogId, { $pull: { likes:id } });
+            return res.status(200).json({ message: "Like removed successfully" });
+        } else {
+            // Add the like
+            await blog.findByIdAndUpdate(blogId, { $push: { likes: id } });
+            return res.status(200).json({ message: "Blog liked successfully" });
+        }
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+function getByCat(req,res){
+    const {category} = req.params
+
+    blog.find({category:category})
+    .then((blogs)=>{
+        if(blogs.length === 0){
+            return res.status(404).json({message:"No blogs found"})
+        }
+        return res.status(200).json(blogs)
+    })
+    .catch((err)=>{
+        return res.status(500).json(err)
+    })
+}
+
+
+
 const blogServices ={
-    getAll,newBlog,getUserBlog,deleteBlog,getSingleBlog
+    getAll,newBlog,getUserBlog,deleteBlog,getSingleBlog,likeBlog,getByCat
 }
 
 

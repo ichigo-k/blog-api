@@ -57,11 +57,15 @@ async function addFollower(req, res, next) {
         const { id } = req.params;
         const { userID } = req.body;
 
+        if(!userID || !id){
+            return res.status(400).json({ message: userID ? "User ID is required" : "Follower ID is required"});
+        }
+
         const FollowUser = await user.findById(id);
         const User = await user.findById(userID);
 
-        if (!FollowUser || !User) {
-            return res.status(404).json({ message: "User not found" });
+        if (!FollowUser | !User) {
+            return res.status(404).json({ message: FollowUser ? "User not found" : "Follower not found"});
         }
 
         if (User.following.includes(id)) {
@@ -72,7 +76,7 @@ async function addFollower(req, res, next) {
         }
 
         if (FollowUser.followers.includes(userID)) {
-            res.status(201)
+            FollowUser.followers = FollowUser.followers.filter(item => item !== userID);
         } else {
             FollowUser.followers.push(userID);
         }
@@ -82,7 +86,7 @@ async function addFollower(req, res, next) {
 
         res.status(201).json({ message: "Successfully followed"+ " "+ FollowUser.name });
     } catch (error) {
-        next(error);
+        res.status(500).json(error.message)
     }
 }
 
