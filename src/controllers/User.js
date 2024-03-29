@@ -26,8 +26,16 @@ function follow(req,res,next){
 }
 
 
+function getProfilepic(req,res,next){
+    TryCatchWrapper(
+        userServices.getProfilepic(req,res,next)
+    )
+
+}
+
+
 const userControllers = {
-    getUser,updateUser,deleteUser,follow
+    getUser,updateUser,deleteUser,follow,getProfilepic
 }
 
 export default userControllers

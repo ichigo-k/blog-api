@@ -1,4 +1,7 @@
 import user from "../models/User.js";
+import fs from "fs"
+import path from "path"
+import mime from "mime"
 
 function getUserDetails(req,res,next){
     const id = req.params.id
@@ -18,23 +21,39 @@ function getUserDetails(req,res,next){
 }
 
 
-function updateUserDetails(req,res,next){
-    const id = req.params.id
-    const {name,email,username} = req.body
-    user.findByIdAndUpdate(id,{name,email,username})
-    .then(() => {
+async function updateUserDetails(req, res, next) {
+    try {
+        const { id } = req.params;
+        const { name, email, username } = req.body;
+        const profilePic = req.filenameData;
+
+        // Step 1: Update user details in the database
+        await user.findByIdAndUpdate(id, { name, email, username, profilePic });
+
+        // Step 2: If a profile picture is provided, find all profile pictures in the database
+        if (profilePic) {
+            const dbProfilePics = await user.find({}, 'profilePic');
+            const dbFilenames = dbProfilePics.map(user => user.profilePic);
+
+            // Step 3: Check the upload folder for files that are not in the database
+            const dirname = path.dirname(new URL(import.meta.url).pathname);
+            const files = await fs.promises.readdir(path.join('./uploads'));
+            const orphanedFiles = files.filter(file => !dbFilenames.includes(file));
+
+            // Step 4: Delete old profile pictures not linked to any user
+            await Promise.all(orphanedFiles.map(filename => fs.promises.unlink(path.join('./uploads', filename))));
+        }
+
         res.status(200).json({
-            message:"User updated successfully"
-        })
-    })
-    .catch((error)=>{
+            message: "User updated successfully"
+        });
+    } catch (error) {
+        console.error("Error updating user:", error);
         res.status(500).json({
-            message:error.message
-        })
-    })
-
+            message: error.message
+        });
+    }
 }
-
 
 function deleteUser(req,res,next){
     const id = req.params.id
@@ -90,8 +109,31 @@ async function addFollower(req, res, next) {
     }
 }
 
+
+async function getProfilepic(req, res, next) {
+   const { name } = req.params;
+    try {
+        const dirname = path.dirname(new URL(import.meta.url).pathname);
+        const file = path.join('./uploads', name);
+        let profilePic = fs.readFileSync(file);
+        
+        // Check if the image exists in the uploads folder 
+        if(!fs.existsSync(`./uploads/${name}`)){
+            return res.status(404).json({ message: "File not found" });
+        }
+
+        // Return the image as a response with its mimetype set to the image's type
+        res.type(mime.getType(file));
+        return res.send(profilePic);
+    } catch (err) {
+        console.error("Error getting profile picture:", err);
+        return res.status(500).json({ message: err.message });
+    }
+
+}
+
 const userServices ={
-    getUserDetails,updateUserDetails,deleteUser,addFollower
+    getUserDetails,updateUserDetails,deleteUser,addFollower, getProfilepic
 }
 
 export default userServices
